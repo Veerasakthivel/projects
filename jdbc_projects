@@ -1,0 +1,119 @@
+package jdbc.practice;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class JdbcDemo {
+
+	public static void main(String[] args) throws SQLException, ClassNotFoundException
+	{
+		JdbcDemo j=new JdbcDemo();
+		j.retrievedata();
+		j.insertdata();
+		j.prepstate();
+		j.updatedata();
+		j.deletedata();
+	}
+
+	public void insertdata() throws SQLException 
+	{
+		String url="jdbc:mysql://localhost:3306/org";
+		String name="root";
+		String pass="PHW#84#jeor";
+		String query="insert into worker values(11,'mylove')";
+		
+		Connection con = DriverManager.getConnection(url, name, pass);
+		Statement st = con.createStatement();
+		int row=st.executeUpdate(query);
+		System.out.println("number of rows affected"+row);
+		
+		st.close();
+		con.close();
+	}
+
+	public void retrievedata() throws ClassNotFoundException, SQLException 
+	{
+		String url = "jdbc:mysql://localhost:3306/org";
+		String uname = "root";
+		String pass = "PHW#84#jeor";
+		String query = "select * from worker";
+		Class.forName("com.mysql.cj.jdbc.Driver"); //load and register the driver // we must download the jaar file in mave repository to avoid classnot found execption													
+		Connection con = DriverManager.getConnection(url, uname, pass);
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(query); // always return resultset.
+
+		while(rs.next()) {
+
+		String userdata = rs.getInt(1) + " : " + rs.getString(2);
+		System.out.println(userdata);
+		}
+		st.close();
+		con.close();
+	}
+	
+	public void prepstate() throws SQLException
+	{
+		String url = "jdbc:mysql://localhost:3306/org";
+		String uname = "root";
+		String pass = "PHW#84#jeor";
+		String query="insert into worker values(?,?,?,?,?,?)";
+		
+		int id=11;
+		String first_name="elisa";
+		String department="HR";
+		String lastname="s";
+		int salary=23000;
+		int joining_date=2014-02-20;
+		
+		
+		Connection con=DriverManager.getConnection(url,uname,pass);
+		PreparedStatement pst= con.prepareStatement(query);
+		pst.setInt(1, id);
+		pst.setString(2, first_name);
+		pst.setString(3, department);
+		pst.setString(4, lastname);
+		pst.setInt(5, joining_date);
+		pst.setInt(6, salary);
+		
+		int row=pst.executeUpdate();
+		System.out.println("number of rows affected:"+row);
+		
+		pst.close();
+		con.close();
+		
+	}
+	
+	public void updatedata() throws SQLException
+	{
+		String url="jdbc:mysql://localhost:3306/org";
+		String name="root";
+		String pass="PHW#84#jeor";
+		String query="update worker set salary=5 where worker_id=1";
+		
+		Connection con = DriverManager.getConnection(url, name, pass);
+		Statement st = con.createStatement();
+		int row=st.executeUpdate(query);
+		System.out.println("number of rows affected "+row);
+		con.close();
+	}
+	
+	public void deletedata() throws SQLException
+	{
+		String url="jdbc:mysql://localhost:3306/org";
+		String name="root";
+		String pass="PHW#84#jeor";
+		String query="delete from worker where worker_id=10";
+		
+		Connection con=DriverManager.getConnection(url,name,pass);
+		Statement st=con.createStatement();
+		int row=st.executeUpdate(query);
+		System.out.println("number of rows affected "+row);
+		st.close();
+		con.close();
+	}
+
+}
